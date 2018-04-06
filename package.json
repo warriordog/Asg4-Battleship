@@ -1,0 +1,22 @@
+{
+  "name": "battleship",
+  "version": "0.0.0",
+  "description": "Asignment 4 - Battleship Project",
+  "main": "battleship.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/warriordog/Asg4-Battleship.git"
+  },
+  "author": "Chris Koehler, Josh Humphries, Donnelly Warren",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/warriordog/Asg4-Battleship/issues"
+  },
+  "homepage": "https://github.com/warriordog/Asg4-Battleship#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
