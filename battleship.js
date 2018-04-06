@@ -1,7 +1,21 @@
-const express = require('express') // include express library
-const app = express()
+// include game module
+const game = require("./game.js");
 
-app.get('/', (req, res) => res.send('Hello World!'))
+// include http module
+const http = require("./http.js");
 
-app.listen(8080, () => console.log('Example app listening on port 8080!'))
+exports.getGame = function() {
+    return game;
+}
+exports.getHttp = function() {
+    return http;
+}
+
+// setup engine
+game.setupEngine(this);
+
+// setup server
+http.setPort(8080);
+http.setupServer(this);
+
 
