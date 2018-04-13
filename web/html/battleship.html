@@ -4,8 +4,39 @@
         <title>Battleship</title>
     </head>
     <body>
+        <script type="text/javascript">
+            function getStatus() {
+                var req = new XMLHttpRequest();
+                req.open("POST", "/api/status");
+                req.send(JSON.stringify({session: "0"}));
+            }
+            
+            function joinGame() {
+                var req = new XMLHttpRequest();
+                req.open("POST", "/api/start");
+                req.send(JSON.stringify({session: null, gameCode: "testgame", playerName: "me", numPlayers: "4"}));
+            }
+            
+            function sendBadJson() {
+                var req = new XMLHttpRequest();
+                req.open("POST", "/api/status");
+                req.send('{session: "abc123"');
+            }
+            
+            function sendBadSession() {
+                var req = new XMLHttpRequest();
+                req.open("POST", "/api/status");
+                req.send(JSON.stringify({foo: 'bar'}));
+            }
+        </script>
         <p>
             Battleship game!
         </p>
+        <br>
+        <button onclick="getStatus()">Get status</button>
+        <button onclick="joinGame()">Join game</button>
+        <br>
+        <button onclick="sendBadJson()">Test bad json</button>
+        <button onclick="sendBadSession()">Test bad session</button>
     </body>
 </html>

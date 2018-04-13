@@ -20,4 +20,5 @@ http.setStaticDirectory('web');
 http.setMainPage('/html/battleship.html')
 http.setupServer(this);
 
-
+// start game
+http.start();
