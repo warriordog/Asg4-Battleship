@@ -71,7 +71,7 @@ exports.Player = class {
         
         // one ship in column sessionId in the first two rows
         //this.ships.push(this.game.board.createShip(this, [[parseInt(this.session), 0], [parseInt(this.session), 1]]));
-        for(i=5; i>0; i--){
+        for(var i = 5; i > 0; i--){
             var l = i;
             if(i<3){
                 l++;
@@ -81,8 +81,8 @@ exports.Player = class {
                 var rx = Math.floor(Math.random()*(this.game.board.width-1));
                 var ry = Math.floor(Math.random()*(this.game.board.height-1));
                 var orientation = 0//Math.floor(Math.random()*4);
-                if(scan(rx, ry, orientation, l)){
-                    fill(rx, ry, orientation, l);
+                if(this.scan(rx, ry, orientation, l)){
+                    this.fill(rx, ry, orientation, l);
                     pass = true;
                 }
                 else{
@@ -95,28 +95,27 @@ exports.Player = class {
     scan(x, y, or, l){
         if(or==0){
             if(y+1>=l){
-                for(i=0; i<l; i++){
-                    if(this.game.board[x][y-i].contents!=0){
+                for(var i=0; i<l; i++){
+                    if(this.game.board.grid[x][y-i].contents != 0){
                         return false;
                     }
                 }
-            }
-            else{
-                return false;
+                return true;
             }
         }
+        return false;
     }
     
     fill(x, y, or, l){
-        var array;
+        var array = [];
         if(or==0){
-            for(i=0; i<l; i++){
+            for(var i=0; i<l; i++){
                 var coords = [x, y-i];
                 array[i] = coords;
             }
         }
-        var ship = this.game.createShip(this, array);
-        this.ship.push(ship);
+        var ship = this.game.board.createShip(this, array);
+        this.ships.push(ship);
     }
  
     fireShot(x, y) {
@@ -192,8 +191,12 @@ exports.Board = class {
         for (var i = 0; i < squares.length; i++) {
             var square = squares[i];
         
-            square.contents = 1;
-            square.ship = ship;
+            if (square.contents != 1) {
+                square.contents = 1;
+                square.ship = ship;
+            } else {
+                throw "Ships overlap!";
+            }
         }
         
         return ship;
@@ -310,7 +313,7 @@ exports.Ship = class {
     
     update() {
         this.sunk = true;
-        for (var i 0; i < squares.length; i++) {
+        for (var i = 0; i < squares.length; i++) {
             var square = squares[i];
             if (square.contents === 1) {
                 this.sunk = false;
