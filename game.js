@@ -60,11 +60,12 @@ exports.Player = class {
         this.nextShotTime = 0;
         this.defeated = false; // defeated when all ships sunk
         this.quit = false; // true if player calls api/end
+        this.score = 0;
     }
     
     calculateScore() {
         //TODO
-        return 0;
+        return this.score;
     }
     
     generateShips() {
@@ -167,6 +168,7 @@ exports.Player = class {
  
     fireShot(x, y) {
         if (this.game.fireShot(x, y)) {
+            this.score = this.score+100;
             //TODO increase score
             return true;
         } else {
