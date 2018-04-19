@@ -66,7 +66,7 @@ exports.setupServer = function(bship) {
             var numPlayers = json.numPlayers;
             if(numPlayers === undefined){
                 var response = {};
-                var exists = battleship.getGame().activeGames[json.gameCode];
+                var exists = battleship.getGame();
                 if(exists===undefined){
                     sendResponse(res, 2, 'game does not exist', {session: null});
                 }
