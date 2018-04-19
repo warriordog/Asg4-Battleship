@@ -68,7 +68,53 @@ exports.Player = class {
         //TODO random generation
         
         // one ship in column sessionId in the first two rows
-        this.ships.push(this.game.board.createShip(this, [[parseInt(this.session), 0], [parseInt(this.session), 1]]));
+        //this.ships.push(this.game.board.createShip(this, [[parseInt(this.session), 0], [parseInt(this.session), 1]]));
+        for(i=5; i>0; i--){
+            var l = i;
+            if(i<3){
+                l++;
+            }
+            var pass = false;
+            while(!pass){
+                var rx = Math.floor(Math.random()*(this.game.board.width-1));
+                var ry = Math.floor(Math.random()*(this.game.board.height-1));
+                var orientation = 0//Math.floor(Math.random()*4);
+                if(scan(rx, ry, orientation, l)){
+                    fill(rx, ry, orientation, l);
+                    pass = true;
+                }
+                else{
+                    pass = false;
+                }
+            }
+        }
+    }
+    
+    scan(x, y, or, l){
+        if(or==0){
+            if(y+1>=l){
+                for(i=0; i<l; i++){
+                    if(this.game.board[x][y-i].contents!=0){
+                        return false;
+                    }
+                }
+            }
+            else{
+                return false;
+            }
+        }
+    }
+    
+    fill(x, y, or, l){
+        var array;
+        if(or==0){
+            for(i=0; i<l; i++){
+                var coords = [x, y-i];
+                array[i] = coords;
+            }
+        }
+        var ship = this.game.createShip(this, array);
+        this.ship.push(ship);
     }
 }
 
