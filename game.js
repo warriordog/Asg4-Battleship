@@ -68,8 +68,6 @@ exports.Player = class {
     }
     
     generateShips() {
-        //TODO random generation
-        
         // one ship in column sessionId in the first two rows
         //this.ships.push(this.game.board.createShip(this, [[parseInt(this.session), 0], [parseInt(this.session), 1]]));
         for(var i = 5; i > 0; i--){
@@ -340,7 +338,7 @@ exports.Game = class {
         
             return true;
         } else {
-            square.contents = 3; // miss
+            //square.contents = 3; // miss
             return false;
         }
     }
