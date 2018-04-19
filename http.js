@@ -64,17 +64,34 @@ exports.setupServer = function(bship) {
         var json = parseAndCheckJSON(req, res);
         if (json != null) {
             var numPlayers = json.numPlayers;
-            if (numPlayers >= 2 && numPlayers <= 8) {
-            
+            if(numPlayers === undefined){
                 var response = {};
-                response.session = battleship.getGame().joinOrStartGame(json.gameCode, json.playerName, json.numPlayers);
-                if (response.session != null) {
-                    sendOKResponse(res, response);
-                } else {
-                    sendResponse(res, 1, 'game name is in use', response)
+                var exists = battleship.getGame().activeGames[json.gameCode];
+                if(exists===undefined){
+                    sendResponse(res, 2, 'game does not exist', {session: null});
                 }
-            } else {
-                sendResponse(res, 2, 'invalid number of players', {session: null});
+                else{
+                    response.session = battleship.getGame().joinOrStartGame(json.gameCode, json.playerName, json.numPlayers);
+                    if (response.session != null) {
+                        sendOKResponse(res, response);
+                    } else {
+                        sendResponse(res, 1, 'game name is in use', response)
+                    }
+                }
+            }
+            else{
+                if (numPlayers >= 2 && numPlayers <= 8) {
+            
+                    var response = {};
+                    response.session = battleship.getGame().joinOrStartGame(json.gameCode, json.playerName, json.numPlayers);
+                    if (response.session != null) {
+                        sendOKResponse(res, response);
+                    } else {
+                        sendResponse(res, 1, 'game name is in use', response)
+                    }
+                } else {
+                    sendResponse(res, 2, 'invalid number of players', {session: null});
+                }
             }
         }
     });
