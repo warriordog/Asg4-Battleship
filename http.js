@@ -149,9 +149,29 @@ function sendOKResponse(res, response) {
 }
 
 function createPlayerList(game) {
-    return {};
+    var list = [];
+    for (var session in Object.keys(game.playerList)) {
+        var player = game.playerList[session];
+        list.push ({name: player.name, score: player.calculateScore()});
+    }
+    return list;
 }
 
 function createClientSection(player) {
-    return {};
+    var client = {ships: []};
+    for (var ship in player.ships) {
+        var clientShip = {squares: [], sunk: ship.sunk};
+        for (var square in ship.squares) {
+            var clientSquare = {contents: square.contents};
+            
+            // hide un-shot ships
+            if (clientSquare.contents === 1) {
+                clientSquare.contents = 0;
+            }
+            
+            clientShip.squares.push(clientSquare);
+        }
+        client.ships.push(clientShip);
+    }
+    return client;
 }

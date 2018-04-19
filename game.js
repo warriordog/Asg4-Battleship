@@ -55,10 +55,15 @@ exports.Player = class {
         this.name = playerName;
         this.session = sessionId;
         this.game = game;
+        this.ships = null;
     }
     
     createPlayerBoard() {
         return {};
+    }
+    
+    calculateScore() {
+        return 0;
     }
 }
 
@@ -76,8 +81,25 @@ exports.Board = class {
         
         this.width = 5 * game.numPlayers;
         this.height = 5 * game.numPlayers;
+        
+        this.grid = Util.allocArray(this.width, this.height);
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                this.grid[x][y] = new exports.Square(this, x, y);
+            }
+        }
     }
 }
+
+exports.Square = class {
+    constructor(board, x, y) {
+        this.x = x;
+        this.y = y;
+        this.board = board;
+        this.contents = 0;//0=empty, 1=ship_hidden, 2=ship_hit 3=ship_miss
+        this.ship = null;
+    }
+};
 
 exports.Game = class {
     constructor(gameName, maxPlayers) {
@@ -111,7 +133,13 @@ exports.Game = class {
     }
 };
 
-
+exports.Ship = class {
+    constructor(player, squares) {
+        this.player = player;
+        this.squares = squares;
+        this.sunk = false;
+    }
+};
 
 function createNewSession() {
     var session = nextId.toString();

@@ -17,7 +17,7 @@ game.setupEngine(this);
 // setup server
 http.setPort(8080);
 http.setStaticDirectory('web');
-http.setMainPage('/html/battleship.html')
+http.setMainPage('/index.html')
 http.setupServer(this);
 
 // start game
