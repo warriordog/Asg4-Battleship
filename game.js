@@ -178,8 +178,8 @@ exports.Player = class {
  
     tickFireTimer() {
         var time = Math.floor(new Date() / 1000);
-        if (time - this.nextShotTime > 3) {
-            this.nextShotTime = time + 3;
+        if (time - this.nextShotTime > 1) {
+            this.nextShotTime = time + 1;
             return true;
         }
         return false;
