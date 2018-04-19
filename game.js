@@ -81,7 +81,7 @@ exports.Player = class {
             while(!pass){
                 var rx = Math.floor(Math.random()*(this.game.board.width-1));
                 var ry = Math.floor(Math.random()*(this.game.board.height-1));
-                var orientation = 0//Math.floor(Math.random()*4);
+                var orientation = Math.floor(Math.random()*4);
                 if(this.scan(rx, ry, orientation, l)){
                     this.fill(rx, ry, orientation, l);
                     pass = true;
@@ -104,6 +104,36 @@ exports.Player = class {
                 return true;
             }
         }
+        else if(or==1){
+            if((x+l)<=width){
+                for(var i=0; i<l; i++){
+                    if(this.game.board.grid[x+i][y].contents != 0){
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        else if(or==2){
+            if((y+l)<=height){
+                for(var i=0; i<l; i++){
+                    if(this.game.board.grid[x][y+i].contents != 0){
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        else if(or==3){
+            if(x+1>=l){
+                for(var i=0; i<l; i++){
+                    if(this.game.board.grid[x-i][y].contents != 0){
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
         return false;
     }
     
@@ -112,6 +142,24 @@ exports.Player = class {
         if(or==0){
             for(var i=0; i<l; i++){
                 var coords = [x, y-i];
+                array[i] = coords;
+            }
+        }
+        else if(or==1){
+            for(var i=0; i<l; i++){
+                var coords = [x+i, y];
+                array[i] = coords;
+            }
+        }
+        else if(or==2){
+            for(var i=0; i<l; i++){
+                var coords = [x, y+i];
+                array[i] = coords;
+            }
+        }
+        else if(or==3){
+            for(var i=0; i<l; i++){
+                var coords = [x-i, y];
                 array[i] = coords;
             }
         }
