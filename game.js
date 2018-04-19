@@ -374,8 +374,8 @@ exports.Ship = class {
     
     update() {
         this.sunk = true;
-        for (var i = 0; i < squares.length; i++) {
-            var square = squares[i];
+        for (var i = 0; i < this.squares.length; i++) {
+            var square = this.squares[i];
             if (square.contents === 1) {
                 this.sunk = false;
             }
