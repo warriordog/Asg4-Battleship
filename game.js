@@ -330,8 +330,8 @@ exports.Game = class {
             if (square.ship.sunk) {
             
                 // check for defeat of player
-                square.player.update();
-                if (square.player.defeated) {
+                square.ship.player.update();
+                if (square.ship.player.defeated) {
                 
                     // check if player won
                     this.checkEndGame()
