@@ -188,7 +188,7 @@ exports.Player = class {
     update() {
         this.defeated = true;
         if (!this.quit) {
-            for (var i = 0; i < ships.length; i++) {
+            for (var i = 0; i < this.ships.length; i++) {
                 var ship = ships[i];
                 
                 if (!ship.sunk) {
