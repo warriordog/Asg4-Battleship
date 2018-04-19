@@ -57,6 +57,8 @@ exports.Player = class {
         this.session = sessionId;
         this.game = game;
         this.ships = [];
+        this.nextShotTime = 0;
+        this.defeated = false; // defeated when all ships sunk
     }
     
     calculateScore() {
@@ -69,6 +71,35 @@ exports.Player = class {
         
         // one ship in column sessionId in the first two rows
         this.ships.push(this.game.board.createShip(this, [[parseInt(this.session), 0], [parseInt(this.session), 1]]));
+    }
+ 
+    fireShot(x, y) {
+        if (this.game.fireShot(x, y)) {
+            //TODO increase score
+            return true;
+        } else {
+            return false;
+        }
+    } 
+ 
+    tickFireTimer() {
+        var time = Math.floor(new Date() / 1000);
+        if (time - this.nextShotTime > 3) {
+            this.nextShotTime = time + 3;
+            return true;
+        }
+        return false;
+    }
+    
+    update() {
+        this.defeated = true;
+        for (var i = 0; i < ships.length; i++) {
+            var ship = ships[i];
+            
+            if (!ship.sunk) {
+                this.defeated = false;
+            }
+        }
     }
 }
 
@@ -134,6 +165,10 @@ exports.Board = class {
         }
         return board;
     }
+    
+    checkCoords(x, y) {
+        return x >= 0 && x < this.width && y >= 0 && y < this.height;
+    }
 }
 
 exports.Square = class {
@@ -178,6 +213,46 @@ exports.Game = class {
     endGame() {
         this.gameState = 2;
     }
+    
+    fireShot(x, y) {
+        var square = this.board.grid[x][y];
+        if (square.contents === 1) {
+            square.contents = 2; // hit
+            
+            // check for ship sunk
+            square.ship.update();
+            if (square.ship.sunk) {
+            
+                // check for defeat of player
+                square.player.update();
+                if (square.player.defeated) {
+                
+                    // check if player won
+                    this.checkEndGame()
+                }
+            }
+        
+            return true;
+        } else {
+            square.contents = 3; // miss
+            return false;
+        }
+    }
+    
+    checkEndGame() {
+        var ended = true;
+        for (var session in playerList) {
+            var player = playerList[session];
+            
+            if (!player.defeated) {
+                ended = false;
+            }
+        }
+        
+        if (ended) {
+            this.gameState = 2;
+        }
+    }
 };
 
 exports.Ship = class {
@@ -185,6 +260,16 @@ exports.Ship = class {
         this.player = player;
         this.squares = squares;
         this.sunk = false;
+    }
+    
+    update() {
+        this.sunk = true;
+        for (var i 0; i < squares.length; i++) {
+            var square = squares[i];
+            if (square.contents === 1) {
+                this.sunk = false;
+            }
+        }
     }
 };
 

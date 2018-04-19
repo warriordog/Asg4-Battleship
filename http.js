@@ -40,6 +40,19 @@ exports.setupServer = function(bship) {
     /*
     setup handlers
     */
+    // handlers for cross-origin
+    /*
+    app.all('/', function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        next();
+    });
+    */
+    app.use(function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        next();
+    });
     
     // handler for static pages
     app.use(express.static(staticDir));
@@ -83,7 +96,34 @@ exports.setupServer = function(bship) {
     });
     // fire a shot
     app.post('/api/fire', function(req, res) {
-        
+        var json = parseAndCheckJSON(req, res);
+        if (json != null) {
+            var player = getAndCheckPlayer(json, res);
+            if (player != null) {
+                if (!player.defeated) {
+                    var x = json.x;
+                    var y = json.y;
+                    
+                    if (player.game.board.checkCoords(x, y)) {
+                        if (player.game.board.grid[x][y].contents < 2) {
+                            if (player.tickFireTimer()) {
+                                var hit = player.fireShot(x, y);
+                                
+                                sendOKResponse(res, {result: hit});
+                            } else {
+                                sendResponse(res, 5, "too soon", {});
+                            }
+                        } else {
+                            sendResponse(res, 2, "space already shot", {});
+                        }
+                    } else {
+                        sendResponse(res, 3, "out of bounds", {});
+                    }
+                } else {
+                    sendResponse(res, 4, "player is out", {});
+                }
+            }
+        }
     });
     // end the game
     app.post('/api/end', function(req, res) {
