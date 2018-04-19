@@ -59,6 +59,7 @@ exports.Player = class {
         this.ships = [];
         this.nextShotTime = 0;
         this.defeated = false; // defeated when all ships sunk
+        this.quit = false; // true if player calls api/end
     }
     
     calculateScore() {
@@ -138,13 +139,21 @@ exports.Player = class {
     
     update() {
         this.defeated = true;
-        for (var i = 0; i < ships.length; i++) {
-            var ship = ships[i];
-            
-            if (!ship.sunk) {
-                this.defeated = false;
+        if (!quit) {
+            for (var i = 0; i < ships.length; i++) {
+                var ship = ships[i];
+                
+                if (!ship.sunk) {
+                    this.defeated = false;
+                }
             }
         }
+    }
+    
+    leaveGame() {
+        this.quit = true;
+        this.defeated = true;
+        this.game.checkEndGame();
     }
 }
 
@@ -301,6 +310,10 @@ exports.Game = class {
         if (ended) {
             this.gameState = 2;
         }
+    }
+    
+    cleanup() {
+        delete activeGames[this.name];
     }
 };
 

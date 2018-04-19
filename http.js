@@ -100,34 +100,52 @@ exports.setupServer = function(bship) {
         if (json != null) {
             var player = getAndCheckPlayer(json, res);
             if (player != null) {
-                if (!player.defeated) {
-                    var x = json.x;
-                    var y = json.y;
-                    
-                    if (player.game.board.checkCoords(x, y)) {
-                        if (player.game.board.grid[x][y].contents < 2) {
-                            if (player.tickFireTimer()) {
-                                var hit = player.fireShot(x, y);
-                                
-                                sendOKResponse(res, {result: hit});
+                if (!player.quit) {
+                    if (!player.defeated) {
+                        var x = json.x;
+                        var y = json.y;
+                        
+                        if (player.game.board.checkCoords(x, y)) {
+                            if (player.game.board.grid[x][y].contents < 2) {
+                                if (player.tickFireTimer()) {
+                                    var hit = player.fireShot(x, y);
+                                    
+                                    sendOKResponse(res, {result: hit});
+                                } else {
+                                    sendResponse(res, 5, "too soon", {});
+                                }
                             } else {
-                                sendResponse(res, 5, "too soon", {});
+                                sendResponse(res, 2, "space already shot", {});
                             }
                         } else {
-                            sendResponse(res, 2, "space already shot", {});
+                            sendResponse(res, 3, "out of bounds", {});
                         }
                     } else {
-                        sendResponse(res, 3, "out of bounds", {});
+                        sendResponse(res, 4, "player is out", {});
                     }
                 } else {
-                    sendResponse(res, 4, "player is out", {});
+                    sendResponse(res, 1, "player has quit", {});
                 }
             }
         }
     });
     // end the game
     app.post('/api/end', function(req, res) {
-        
+        var json = parseAndCheckJSON(req, res);
+        if (json != null) {
+            var player = getAndCheckPlayer(json, res);
+            if (player != null) {
+                if (player.game.gameState != 2) {
+                    if (!player.quit) {
+                        player.leaveGame();
+                    } else {
+                        sendResponse(res, 1, "player has quit", {});
+                    }
+                } else {
+                    player.game.cleanup();
+                }
+            }
+        }
     });
 }
 
