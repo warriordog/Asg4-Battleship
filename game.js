@@ -105,7 +105,7 @@ exports.Player = class {
             }
         }
         else if(or==1){
-            if((x+l)<=width){
+            if((x+l)<=this.game.board.width){
                 for(var i=0; i<l; i++){
                     if(this.game.board.grid[x+i][y].contents != 0){
                         return false;
@@ -115,7 +115,7 @@ exports.Player = class {
             }
         }
         else if(or==2){
-            if((y+l)<=height){
+            if((y+l)<=this.game.board.height){
                 for(var i=0; i<l; i++){
                     if(this.game.board.grid[x][y+i].contents != 0){
                         return false;
