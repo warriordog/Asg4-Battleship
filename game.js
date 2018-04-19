@@ -1,6 +1,7 @@
 /*
     Game logic
 */
+const util = require("./util.js")
 
 // list of games that are currently active
 var activeGames = {};
@@ -55,15 +56,19 @@ exports.Player = class {
         this.name = playerName;
         this.session = sessionId;
         this.game = game;
-        this.ships = null;
-    }
-    
-    createPlayerBoard() {
-        return {};
+        this.ships = [];
     }
     
     calculateScore() {
+        //TODO
         return 0;
+    }
+    
+    generateShips() {
+        //TODO random generation
+        
+        // one ship in column sessionId in the first two rows
+        this.ships.push(this.game.board.createShip(this, [[parseInt(this.session), 0], [parseInt(this.session), 1]]));
     }
 }
 
@@ -71,7 +76,7 @@ exports.PlayerBoard = class {
     constructor(width, height) {
         this.width = width;
         this.height = height;
-        this.grid = [];
+        this.grid = util.allocArray(width, height);
     }
 }
 
@@ -79,23 +84,62 @@ exports.Board = class {
     constructor(game) {
         this.game = game;
         
-        this.width = 5 * game.numPlayers;
-        this.height = 5 * game.numPlayers;
+        this.width = 5 * game.maxPlayers;
+        this.height = 5 * game.maxPlayers;
         
-        this.grid = Util.allocArray(this.width, this.height);
+        this.grid = util.allocArray(this.width, this.height);
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
-                this.grid[x][y] = new exports.Square(this, x, y);
+                this.grid[x][y] = new exports.Square(x, y);
             }
         }
+    }
+    
+    createShip(player, locations) {
+        var squares = [];
+    
+        // convert x,y to square pointers
+        for (var i = 0; i < locations.length; i++) {
+            var loc = locations[i];
+            
+            var x = loc[0];
+            var y = loc[1];
+            
+            squares.push(this.grid[x][y]);
+        }
+        
+        // create ship
+        var ship = new exports.Ship(player, squares);
+        
+        // set pointers in squares
+        for (var i = 0; i < squares.length; i++) {
+            var square = squares[i];
+        
+            square.contents = 1;
+            square.ship = ship;
+        }
+        
+        return ship;
+    }
+    
+    getAnonymousView() {
+        var board = new exports.PlayerBoard(this.width, this.height);
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                board.grid[x][y] = this.grid[x][y].contents;
+                if (board.grid[x][y] === 1) {
+                    board.grid[x][y] = 0;
+                }
+            }
+        }
+        return board;
     }
 }
 
 exports.Square = class {
-    constructor(board, x, y) {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.board = board;
         this.contents = 0;//0=empty, 1=ship_hidden, 2=ship_hit 3=ship_miss
         this.ship = null;
     }
@@ -104,21 +148,24 @@ exports.Square = class {
 exports.Game = class {
     constructor(gameName, maxPlayers) {
         this.name = gameName;
-        this.numPlayers = maxPlayers;
+        this.maxPlayers = maxPlayers;
+        this.numPlayers = 0;
         
         this.playerList = {};
         this.gameState = 0; //0=starting, 1=ingame, 2=finished
+        this.board = new exports.Board(this);
     }
     
     addPlayer(player) {
         if (this.gameState == 0) {
             // add player to list
             this.playerList[player.session] = player;
+            this.numPlayers++;
             
-            //TODO place ships
+            player.generateShips();
             
             // start game if everyone has joined
-            if (Object.keys(this.playerList).length >= this.numPlayers) {
+            if (this.numPlayers >= this.maxPlayers) {
                 this.startGame();
             }
         }

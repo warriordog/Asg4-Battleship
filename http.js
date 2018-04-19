@@ -74,7 +74,7 @@ exports.setupServer = function(bship) {
                 var response = {};
                 response.state = player.game.gameState;
                 response.players = createPlayerList(player.game);
-                response.board = player.createPlayerBoard();
+                response.board = player.game.board.getAnonymousView();
                 response.client = createClientSection(player);
                 
                 sendOKResponse(res, response);
@@ -159,15 +159,12 @@ function createPlayerList(game) {
 
 function createClientSection(player) {
     var client = {ships: []};
-    for (var ship in player.ships) {
+    for (var i = 0; i < player.ships.length; i++) {
+        var ship = player.ships[i];
         var clientShip = {squares: [], sunk: ship.sunk};
-        for (var square in ship.squares) {
-            var clientSquare = {contents: square.contents};
-            
-            // hide un-shot ships
-            if (clientSquare.contents === 1) {
-                clientSquare.contents = 0;
-            }
+        for (var j = 0; j < ship.squares.length; j++) {
+            var square = ship.squares[j];
+            var clientSquare = {x: square.x, y: square.y, contents: square.contents};
             
             clientShip.squares.push(clientSquare);
         }
