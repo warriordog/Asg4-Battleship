@@ -315,7 +315,7 @@ exports.Game = class {
     
     fireShot(x, y) {
         var square = this.board.grid[x][y];
-        if (square.contents === 1) {
+        if (square.contents === 1 || square.contents === 2) {
             square.contents = 2; // hit
             
             // check for ship sunk
