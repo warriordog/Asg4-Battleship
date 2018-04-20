@@ -340,7 +340,7 @@ exports.Game = class {
         
             return true;
         } else {
-            //square.contents = 3; // miss
+            square.contents = 3; // miss
             return false;
         }
     }

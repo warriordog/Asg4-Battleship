@@ -104,7 +104,7 @@ exports.setupServer = function(bship) {
                 var response = {};
                 response.state = player.game.gameState;
                 response.players = createPlayerList(player.game);
-                response.board = player.game.board.getAnonymousView();
+                //response.board = player.game.board.getAnonymousView();
                 response.client = createClientSection(player);
                 
                 sendOKResponse(res, response);
@@ -123,7 +123,7 @@ exports.setupServer = function(bship) {
                         var y = json.y;
                         
                         if (player.game.board.checkCoords(x, y)) {
-                            if (player.game.board.grid[x][y].contents < 2) {
+                            //if (player.game.board.grid[x][y].contents < 2) {
                                 if (player.tickFireTimer()) {
                                     var hit = player.fireShot(x, y);
                                     
@@ -131,9 +131,9 @@ exports.setupServer = function(bship) {
                                 } else {
                                     sendResponse(res, 5, "too soon", {});
                                 }
-                            } else {
-                                sendResponse(res, 2, "space already shot", {});
-                            }
+                            //} else {
+                            //    sendResponse(res, 2, "space already shot", {});
+                            //}
                         } else {
                             sendResponse(res, 3, "out of bounds", {});
                         }
