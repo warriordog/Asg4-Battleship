@@ -60,13 +60,11 @@ exports.Player = class {
     }
     
     calculateScore() {
-        //TODO
         return this.score;
     }
     
     generateShips() {
         // one ship in column sessionId in the first two rows
-        //this.ships.push(this.game.board.createShip(this, [[parseInt(this.session), 0], [parseInt(this.session), 1]]));
         for(var i = 5; i > 0; i--){
             var l = i;
             if(i<3){
@@ -165,7 +163,6 @@ exports.Player = class {
     fireShot(x, y) {
         if (this.game.fireShot(x, y)) {
             this.score = this.score+100;
-            //TODO increase score
             return true;
         } else {
             return false;
