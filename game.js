@@ -398,7 +398,7 @@ exports.Ship = class {
                 this.sunk = false;
             }
         }
-        console.log(this.player.name + "'s ship sunk: " + sunk);
+        console.log(this.player.name + "'s ship sunk: " + this.sunk);
     }
 };
 
