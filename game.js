@@ -339,16 +339,16 @@ exports.Game = class {
     }
     
     checkEndGame() {
-        var ended = true;
+        var playersLeft = 0;
         for (var session in playerList) {
             var player = playerList[session];
             
             if (!player.defeated) {
-                ended = false;
+                playersLeft++;
             }
         }
         
-        if (ended) {
+        if (playersLeft <= 1) {
             this.gameState = 2;
         }
     }
