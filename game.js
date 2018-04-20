@@ -55,6 +55,8 @@ exports.Player = class {
         this.defeated = false; // defeated when all ships sunk
         this.quit = false; // true if player calls api/end
         this.score = 0;
+        
+        console.log(playerName + " -> " + this.name);
     }
     
     calculateScore() {
@@ -357,6 +359,7 @@ exports.Game = class {
     joinGame(playerName) {
         // make sure name is not taken
         for (var sess in this.playerList) {
+        
             if (this.playerList[sess].name === playerName) {
                 // name is in use
                 return null;

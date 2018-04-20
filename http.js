@@ -236,11 +236,9 @@ function sendOKResponse(res, response) {
 
 function createPlayerList(game) {
     var list = [];
-    console.log(JSON.stringify(Object.keys(game.playerList)));
-    for (var session in Object.keys(game.playerList)) {
-        console.log(JSON.stringify(session));
+    
+    for (var session in game.playerList) {
         var player = game.playerList[session];
-        console.log(JSON.stringify(session));
         list.push ({name: player.name, score: player.calculateScore()});
     }
     return list;
