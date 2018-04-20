@@ -71,7 +71,7 @@ exports.Player = class {
                 l++;
             }
             var pass = false;
-            while(!pass){
+            while (!pass){
                 var rx = Math.floor(Math.random()*(this.game.board.width-1));
                 var ry = Math.floor(Math.random()*(this.game.board.height-1));
                 var orientation = Math.floor(Math.random()*4);
@@ -162,7 +162,7 @@ exports.Player = class {
  
     fireShot(x, y) {
         if (this.game.fireShot(x, y)) {
-            this.score = this.score+100;
+            this.score = this.score + 100;
             return true;
         } else {
             return false;
@@ -179,16 +179,20 @@ exports.Player = class {
     }
     
     update() {
+        var shipsLeft = 0;
         this.defeated = true;
         if (!this.quit) {
             for (var i = 0; i < this.ships.length; i++) {
                 var ship = this.ships[i];
                 
                 if (!ship.sunk) {
+                    shipsLeft++;
                     this.defeated = false;
                 }
             }
         }
+        
+        console.log(this.name + "has " + shipsLeft + "ships left and is defeated: " + this.defeated);
     }
     
     leaveGame() {
@@ -348,6 +352,8 @@ exports.Game = class {
             }
         }
         
+        console.log("Players left: " + playersLeft);
+        
         if (playersLeft <= 1) {
             this.gameState = 2;
         }
@@ -392,6 +398,7 @@ exports.Ship = class {
                 this.sunk = false;
             }
         }
+        console.log(this.player.name + "'s ship sunk: " + sunk);
     }
 };
 
