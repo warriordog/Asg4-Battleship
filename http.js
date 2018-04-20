@@ -115,6 +115,7 @@ exports.setupServer = function(bship) {
                 response.state = player.game.gameState;
                 response.players = createPlayerList(player.game);
                 //response.board = player.game.board.getAnonymousView();
+                response.board = {width: player.game.board.width, height: player.game.board.height};
                 response.client = createClientSection(player);
                 
                 sendOKResponse(res, response);
