@@ -344,8 +344,8 @@ exports.Game = class {
     
     checkEndGame() {
         var playersLeft = 0;
-        for (var session in playerList) {
-            var player = playerList[session];
+        for (var session in this.playerList) {
+            var player = this.playerList[session];
             
             if (!player.defeated) {
                 playersLeft++;
