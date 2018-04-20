@@ -356,8 +356,8 @@ exports.Game = class {
     
     joinGame(playerName) {
         // make sure name is not taken
-        for (var sess in game.playerList) {
-            if (game.playerList[sess].name === playerName) {
+        for (var sess in this.playerList) {
+            if (this.playerList[sess].name === playerName) {
                 // name is in use
                 return null;
             }
@@ -365,9 +365,9 @@ exports.Game = class {
         
         // add player
         var session = createNewSession();
-        var player = new exports.Player(playerName, session, game);
+        var player = new exports.Player(playerName, session, this);
         
-        game.addPlayer(player);
+        this.addPlayer(player);
         
         return session;
     }
