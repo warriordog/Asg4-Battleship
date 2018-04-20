@@ -60,38 +60,48 @@ exports.setupServer = function(bship) {
     app.get('/', (req, res) => res.redirect(mainPage));
     
     // start the game
-    app.post('/api/start', function(req, res) {
+    app.post('/api/create', function(req, res) {
         var json = parseAndCheckJSON(req, res);
         if (json != null) {
             var numPlayers = json.numPlayers;
-            if(numPlayers === undefined){
-                var response = {};
-                var exists = battleship.getGame();
-                if(exists===undefined){
-                    sendResponse(res, 2, 'game does not exist', {session: null});
-                }
-                else{
-                    response.session = battleship.getGame().joinOrStartGame(json.gameCode, json.playerName, json.numPlayers);
-                    if (response.session != null) {
-                        sendOKResponse(res, response);
+            if (numPlayers >= 2 && numPlayers <= 8) {
+        
+                // create game
+                var game = battleship.getGame().createGame(json.gameCode, json.numPlayers);
+                
+                if (game != null) {
+                    // join game
+                    var session = game.joinGame(json.playerName);
+                    
+                    if (session != null) {
+                        sendOKResponse(res, {session: session});
                     } else {
-                        sendResponse(res, 1, 'game name is in use', response)
-                    }
-                }
-            }
-            else{
-                if (numPlayers >= 2 && numPlayers <= 8) {
-            
-                    var response = {};
-                    response.session = battleship.getGame().joinOrStartGame(json.gameCode, json.playerName, json.numPlayers);
-                    if (response.session != null) {
-                        sendOKResponse(res, response);
-                    } else {
-                        sendResponse(res, 1, 'game name is in use', response)
+                        sendResponse(res, 1, 'name in use', {session: null})
                     }
                 } else {
-                    sendResponse(res, 2, 'invalid number of players', {session: null});
+                    sendResponse(res, 1, 'game name is in use', {session: null})
                 }
+            } else {
+                sendResponse(res, 2, 'invalid number of players', {session: null});
+            }
+        }
+    });
+    app.post('/api/join', function(req, res) {
+        var json = parseAndCheckJSON(req, res);
+        if (json != null) {
+        
+            var game = battleship.getGame().findGame(json.gameCode);
+            if (game != undefined) {
+                // join game
+                var session = game.joinGame(json.playerName);
+                
+                if (session != null) {
+                    sendOKResponse(res, {session: session});
+                } else {
+                    sendResponse(res, 1, 'name in use', {session: null})
+                }
+            } else {
+                sendResponse(res, 2, 'game does not exist', {session: null});
             }
         }
     });
@@ -225,8 +235,11 @@ function sendOKResponse(res, response) {
 
 function createPlayerList(game) {
     var list = [];
+    console.log(JSON.stringify(Object.keys(game.playerList)));
     for (var session in Object.keys(game.playerList)) {
+        console.log(JSON.stringify(session));
         var player = game.playerList[session];
+        console.log(JSON.stringify(session));
         list.push ({name: player.name, score: player.calculateScore()});
     }
     return list;

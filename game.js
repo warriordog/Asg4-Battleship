@@ -28,27 +28,21 @@ exports.lookupPlayer = function(session) {
     return null;
 }
 
-exports.joinOrStartGame = function(gameName, playerName, maxPlayers) {
+exports.createGame = function(gameName, maxPlayers) {
     // get or create game
     var game = activeGames[gameName];
-    if (game == undefined) {
+    if (game === undefined) {
         game = new exports.Game(gameName, maxPlayers);
         activeGames[gameName] = game;
+        
+        return game;
+    } else {
+        return null;
     }
-    
-    // make sure name is not taken
-    for (var p in game.playerList) {
-        if (game.playerList[p].name === playerName) {
-            // name is in use
-            return null;
-        }
-    }
-    
-    // add player
-    var session = createNewSession();
-    var player = new exports.Player(playerName, session, game);
-    game.addPlayer(player);
-    return session;
+}
+
+exports.findGame = function(gameName) {
+    return activeGames[gameName];
 }
 
 exports.Player = class {
@@ -358,6 +352,24 @@ exports.Game = class {
         if (ended) {
             this.gameState = 2;
         }
+    }
+    
+    joinGame(playerName) {
+        // make sure name is not taken
+        for (var sess in game.playerList) {
+            if (game.playerList[sess].name === playerName) {
+                // name is in use
+                return null;
+            }
+        }
+        
+        // add player
+        var session = createNewSession();
+        var player = new exports.Player(playerName, session, game);
+        
+        game.addPlayer(player);
+        
+        return session;
     }
     
     cleanup() {
