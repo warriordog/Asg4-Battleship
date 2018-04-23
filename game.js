@@ -177,7 +177,7 @@ exports.Player = class {
         }
         return false;
     }
-    
+    //Demonstrating Github Functionality
     update() {
         var shipsLeft = 0;
         this.defeated = true;
